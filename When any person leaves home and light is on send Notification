@@ -1,0 +1,68 @@
+alias: When any person leaves home and light is on send Notification
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - person.fiek
+      - person.chantal
+      - person.stef
+    from: home
+    to: not_home
+    for:
+      hours: 0
+      minutes: 1
+      seconds: 0
+condition:
+  - condition: or
+    conditions:
+      - condition: device
+        type: is_on
+        device_id: 77366a02ece7935e2f478df0c293fce2
+        entity_id: light.lamp_plafon_achter
+        domain: light
+      - condition: device
+        type: is_on
+        device_id: 4ce65323ae70560fead638966f2fa0db
+        entity_id: light.lamp_plafon_voor
+        domain: light
+      - condition: device
+        type: is_on
+        device_id: 0e5cf2922fc287b31a4deea95428fc57
+        entity_id: light.staande_lamp
+        domain: light
+      - condition: device
+        type: is_on
+        device_id: 9883e4cfe83e5bc8152867a66bb57e4f
+        entity_id: light.lamp_plafon_stef
+        domain: light
+action:
+  - service: notify.mobile_app_sm_g781b
+    data:
+      message: Er staan nog lampen aan, wat wil je doen?
+      title: Waarschuwing!
+      data:
+        image: /media/local/images/light_bulb.png
+        actions:
+          - action: URI
+            title: Bekijk
+            uri: /lovelace/lights
+          - action: ALL_LIGHTS_OUT
+            title: Zet uit
+  - wait_for_trigger:
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: ALL_LIGHTS_OUT
+        context: {}
+    timeout:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+    continue_on_timeout: false
+  - service: scene.turn_on
+    data:
+      transition: 3
+    target:
+      entity_id: scene.alles_uit
+mode: single
