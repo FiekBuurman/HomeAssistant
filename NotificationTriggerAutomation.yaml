@@ -1,1 +1,38 @@
-
+alias: Notification trigger automation
+description: ""
+trigger: []
+condition: []
+action:
+  - service: notify.notify
+    data:
+      message: Er staan nog lampen aan, wat wil je doen?
+      title: Waarschuwing
+      data:
+        actions:
+          - action: URI
+            title: Bekijk
+            uri: /lovelace/lights
+          - action: ALL_LIGHTS_OUT
+            title: Zet uit
+  - wait_for_trigger:
+      - platform: event
+        event_type: mobile_app_notification_action
+        event_data:
+          action: ALL_LIGHTS_OUT
+        context:
+          user_id:
+            - be71b28c826d490db5a88a8b31892589
+            - 116399eba8f7412ea57842144d8e698d
+            - aeab18b4c4c34d3bb7cc863cef7a9f3b
+    timeout:
+      hours: 0
+      minutes: 1
+      seconds: 0
+      milliseconds: 0
+    continue_on_timeout: false
+  - service: scene.turn_on
+    data:
+      transition: 10
+    target:
+      entity_id: scene.alles_uit
+mode: single
