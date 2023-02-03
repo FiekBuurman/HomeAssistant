@@ -19,11 +19,7 @@ action:
         event_type: mobile_app_notification_action
         event_data:
           action: ALL_LIGHTS_OUT
-        context:
-          user_id:
-            - be71b28c826d490db5a88a8b31892589
-            - 116399eba8f7412ea57842144d8e698d
-            - aeab18b4c4c34d3bb7cc863cef7a9f3b
+        context: {}
     timeout:
       hours: 0
       minutes: 1
@@ -32,7 +28,7 @@ action:
     continue_on_timeout: false
   - service: scene.turn_on
     data:
-      transition: 10
+      transition: 3
     target:
       entity_id: scene.alles_uit
 mode: single
