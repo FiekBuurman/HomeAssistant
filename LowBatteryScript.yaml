@@ -2,8 +2,9 @@
 {%- set ns = namespace(sensors=[]) -%}
 {%- for state in states.sensor
   | selectattr('attributes.device_class', 'defined')
-  | selectattr('attributes.state_class', 'defined')
   | selectattr('attributes.device_class', '==', 'battery')
+  | selectattr('attributes.state_class', 'defined')
+  | selectattr('attributes.state_class', '==', 'measurement')
   | selectattr('state','is_number') -%}  
 
   {%- if state.state | int <= threshold -%}
